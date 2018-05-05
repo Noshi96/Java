@@ -1,0 +1,401 @@
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class Scraper {
+    public static void main(String[] args) throws IOException {
+        //String tablica_title[] = new String[251];
+        //String tablica_rate[] = new String[251];
+        //final Document document = Jsoup.connect("https://www.imdb.com/chart/top").userAgent("Mozilla/17.0").get();
+        // System.out.println(document.outerHtml());
+        //int licznik = 0;
+        /*
+        for (Element row : document.select("table.chart.full-width tr")) {
+            final String title = row.select(".titleColumn a").text();
+            final String rating = row.select(".imdbRating").text();
+           // System.out.println(licznik + " " + title + " " + rating);
+            tablica_title[licznik] = (String) title;
+            tablica_rate[licznik] = (String) rating;
+            licznik++;
+        }
+        */
+       // System.out.println(tablica_rate[1] + " ->" + tablica_title[1]);
+////////////////////////////////IMDB////////////////////////////////////////////////////////////////////
+
+        PrintWriter zapis =  new PrintWriter("score.txt");
+        PrintWriter zapis2 =  new PrintWriter("title.txt");
+        PrintWriter zapis3 =  new PrintWriter("titleorg.txt");
+
+
+        File plik = new File("D:\\Prg\\IdeaProjects\\scraper\\src\\main\\resources\\baza_imdb.txt");
+        Scanner odczyt = new Scanner(plik);
+        int licz=0;
+        int ilicz=0;
+        while(odczyt.hasNextLine()){
+            String tekst=odczyt.nextLine();
+            ilicz++;
+        }
+        String[] baza = new String[ilicz];
+        Scanner iodczyt = new Scanner(plik);
+        while(iodczyt.hasNextLine()){
+            String tekst=iodczyt.nextLine();
+            baza[licz]=tekst;
+            //System.out.println(odczyt.nextLine());
+            System.out.println(baza[licz]);
+            licz++;
+        }
+
+
+
+        String[] table_imdb_score = new String[251];
+        String[] table_imdb_title = new String[251];
+        String[] table_imdb_org_title = new String[251];
+
+        //final Document document2 = Jsoup.connect("https://www.imdb.com/title/tt0111161/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=e31d89dd-322d-4646-8962-327b42fe94b1&pf_rd_r=W9T810JKTPWMR2X7JTGW&pf_rd_s=center-1&pf_rd_t=15506&pf_rd_i=top&ref_=chttp_tt_1").userAgent("Mozilla/17.0").get();
+        for(int i=0;i<baza.length;i++) {
+            Document document2 = Jsoup.connect(baza[i]).userAgent("Mozilla/17.0").get();
+            Elements element = document2.select("div.ratingValue");
+            String score = element.select(".ratingValue strong").text();
+            Elements element2 = document2.select(".title_wrapper");
+            String title = element2.select("h1").text();
+            Elements element3 = document2.select(".originalTitle");
+            String titleorg = element2.select(".originalTitle").text();
+
+            String[] ptitle = title.split("\\(");
+            String final_title = ptitle[0];
+            String[] porgtitle = titleorg.split("\\(");
+            String final_org_title = porgtitle[0];
+            System.out.println(final_title);
+            System.out.println(final_org_title);
+            System.out.println(score);
+
+            table_imdb_org_title[i] = final_org_title;
+            table_imdb_score[i] = score;
+            table_imdb_title[i] = final_title;
+
+            zapis.println(table_imdb_score[i]);
+            zapis2.println(table_imdb_title[i]);
+            zapis3.println(table_imdb_org_title[i]);
+
+        }
+       zapis.close();
+       zapis2.close();
+       zapis3.close();
+
+////////////////////////////////IMDB////////////////////////////////////////////////////////////////////
+
+        ////////////////odczyt z pliku/////////////////////////////////////
+        /*
+        File plik = new File("D:\\Prg\\IdeaProjects\\scraper\\src\\main\\resources\\imdb_score.txt");
+        Scanner odczyt = new Scanner(plik);
+        while(odczyt.hasNextLine()){
+           // String tekst=odczyt.nextLine();
+            System.out.println(odczyt.nextLine());
+        }
+        */
+        ////////////////odczyt z pliku/////////////////////////////////////
+
+        ////////////////zapis do pliku/////////////////////////////////////
+        /*
+        PrintWriter zapis =  new PrintWriter("score.txt");
+        zapis.println(table_imdb_score[0]);
+        zapis.close();
+        */
+        ////////////////zapis do pliku/////////////////////////////////////
+
+
+
+////////////////////////////////FILMWEB/////////////////////////////////////////////////////////////////
+
+
+        PrintWriter fzapis =  new PrintWriter("score_filmweb.txt");
+        PrintWriter fzapis2 =  new PrintWriter("title_filmweb.txt");
+        PrintWriter fzapis3 =  new PrintWriter("titleorg_filmweb.txt");
+
+
+
+        File fplik = new File("D:\\Prg\\IdeaProjects\\scraper\\src\\main\\resources\\baza_filmweb.txt");
+        Scanner fodczyt = new Scanner(fplik);
+        int flicz=0;
+        int fflicz=0;
+        while(fodczyt.hasNextLine()){
+            String ftekst=fodczyt.nextLine();
+            fflicz++;
+        }
+        Scanner ffodczyt = new Scanner(fplik);
+        String[] baza_filmweb = new String[fflicz];
+        while(ffodczyt.hasNextLine()){
+            String ftekst=ffodczyt.nextLine();
+            baza_filmweb[flicz]=ftekst;
+            //System.out.println(odczyt.nextLine());
+            System.out.println(baza_filmweb[flicz]);
+            flicz++;
+        }
+
+
+        String[] table_filmweb_score = new String[251];
+        String[] table_filmweb_title = new String[251];
+        String[] table_filmweb_org_title = new String[251];
+
+        for(int i=0;i<baza_filmweb.length;i++) {
+            Document document3 = Jsoup.connect(baza_filmweb[i]).userAgent("Mozilla/17.0").get();
+            Elements element5 = document3.select(".filmRateBox span");
+            String filmweb_score = element5.text();
+
+            String[] fpscore = filmweb_score.split(" ");
+            String final_fscore = fpscore[0];
+            System.out.println(final_fscore);
+            Elements element4 = document3.select(".bottom-15");
+            String title_filmweb = element4.select("h1").text();
+
+            String[] pftitle = title_filmweb.split("\\(");
+            String final_filmweb_title = pftitle[0];
+            System.out.println(final_filmweb_title);
+            String title_org_filmweb = element4.select("h2").text();
+            System.out.println(title_org_filmweb);
+
+
+            table_filmweb_org_title[i] = title_org_filmweb;
+            table_filmweb_score[i] = final_fscore;
+            table_filmweb_title[i] = final_filmweb_title;
+
+           fzapis.println(table_filmweb_score[i]);
+            fzapis2.println(table_filmweb_title[i]);
+            fzapis3.println(table_filmweb_org_title[i]);
+        }
+         fzapis.close();
+         fzapis2.close();
+         fzapis3.close();
+
+
+////////////////////////////////FILMWEB/////////////////////////////////////////////////////////////////
+
+////////////////////////////////rotten tomatoes/////////////////////////////////////////////////////////////////
+
+        PrintWriter rzapis =  new PrintWriter("tomatometer_proc.txt");
+        PrintWriter rzapis2 =  new PrintWriter("tomatometer_average_rating.txt");
+        PrintWriter rzapis3 =  new PrintWriter("tomatometer_reviewscounted.txt");
+        PrintWriter rzapis4 =  new PrintWriter("tomatometer_fresh.txt");
+        PrintWriter rzapis5 =  new PrintWriter("tomatometer_rotten.txt");
+        PrintWriter rzapis6 =  new PrintWriter("audience_score_proc.txt");
+        PrintWriter rzapis7 =  new PrintWriter("audience_score_average_rating.txt");
+        PrintWriter rzapis8 =  new PrintWriter("audience_score_users_rating.txt");
+        PrintWriter rzapis9 =  new PrintWriter("rtitle.txt");
+
+
+
+        File rplik = new File("D:\\Prg\\IdeaProjects\\scraper\\src\\main\\resources\\baza_rotten_tomatoes.txt");
+        Scanner rodczyt = new Scanner(rplik);
+        int rlicz=0;
+        int rrlicz=0;
+        while(rodczyt.hasNextLine()){
+            String rtekst=rodczyt.nextLine();
+            rrlicz++;
+        }
+        String[] baza_rotten_tomatoes = new String[rrlicz];
+        Scanner rrodczyt = new Scanner(rplik);
+        while(rrodczyt.hasNextLine()){
+            String rtekst=rrodczyt.nextLine();
+            baza_rotten_tomatoes[rlicz]=rtekst;
+            //System.out.println(odczyt.nextLine());
+            System.out.println(baza_rotten_tomatoes[rlicz]);
+            rlicz++;
+        }
+
+        String[] table_rotten_tomatoes_tomatometer_proc = new String[251];
+        String[] table_rotten_tomatoes_tomatometer_average_rating = new String[251];
+        String[] table_rotten_tomatoes_tomatometer_reviewscounted = new String[251];
+        String[] table_rotten_tomatoes_tomatometer_fresh = new String[251];
+        String[] table_rotten_tomatoes_tomatometer_rotten = new String[251];
+        String[] table_rotten_tomatoes_audience_score_proc = new String[251];
+        String[] table_rotten_tomatoes_audience_score_average_rating = new String[251];
+        String[] table_rotten_tomatoes_audience_score_users_rating = new String[251];
+        String[] table_rotten_tomatoes_rtitle = new String[251];
+
+        for(int i=0;i<baza_rotten_tomatoes.length;i++) {
+            Document document4 = Jsoup.connect(baza_rotten_tomatoes[i]).userAgent("Mozilla/17.0").get();
+            Elements element6 = document4.select(".tomato-left span");
+            String tomatometer = element6.text();
+            System.out.println(tomatometer);
+
+            Elements element6_5 = document4.select(".superPageFontColor");
+            String tomatometer_5 = element6_5.text();
+            System.out.println(tomatometer_5);
+
+            String[] ttomatometer = tomatometer_5.split(" ");
+            String tomatometer_proc = ttomatometer[6];
+            System.out.println(tomatometer_proc);
+
+                table_rotten_tomatoes_tomatometer_proc[i]=tomatometer_proc;
+
+            String tomatometer_average_rating = ttomatometer[9];
+            System.out.println(tomatometer_average_rating);
+
+                table_rotten_tomatoes_tomatometer_average_rating[i]=tomatometer_average_rating;
+
+            String tomatometer_reviewscounted = ttomatometer[14];
+            System.out.println(tomatometer_reviewscounted);
+
+                table_rotten_tomatoes_tomatometer_reviewscounted[i]=tomatometer_reviewscounted;
+
+            String tomatometer_fresh = ttomatometer[18];
+            System.out.println(tomatometer_fresh);
+
+                table_rotten_tomatoes_tomatometer_fresh[i]=tomatometer_fresh;
+
+            String tomatometer_rotten = ttomatometer[21];
+            System.out.println(tomatometer_rotten);
+
+                table_rotten_tomatoes_tomatometer_rotten[i]=tomatometer_rotten;
+
+            Elements element8 = document4.select(".col-sm-8.col-xs-12.audience-panel");
+            String audience_rating = element8.text();
+            System.out.println(audience_rating);
+
+            String[] audience_score = audience_rating.split(" ");
+            String audience_score_proc = audience_score[2];
+            System.out.println(audience_score_proc);
+
+                table_rotten_tomatoes_audience_score_proc[i]=audience_score_proc;
+
+            String audience_score_average_rating = audience_score[7];
+            System.out.println(audience_score_average_rating);
+
+                table_rotten_tomatoes_audience_score_average_rating[i]=audience_score_average_rating;
+
+            String audience_score_users_rating = audience_score[10];
+            System.out.println(audience_score_users_rating);
+
+                table_rotten_tomatoes_audience_score_users_rating[i]=audience_score_users_rating;
+
+            Elements element9 = document4.select("#heroImageContainer");
+            String rooten_title = element9.text();
+            System.out.println(rooten_title);
+
+            Elements element9_5 = document4.select("#heroImageContainer span");
+            String rooten_title_5 = element9_5.text();
+            System.out.println(rooten_title_5);
+
+            String[] rtitle = rooten_title.split(rooten_title_5);
+            String final_rtitle = rtitle[0];
+            System.out.println(final_rtitle);
+
+                table_rotten_tomatoes_rtitle[i]=final_rtitle;
+
+
+
+            rzapis.println(table_rotten_tomatoes_tomatometer_proc[i]);
+            rzapis2.println(table_rotten_tomatoes_tomatometer_average_rating[i]);
+            rzapis3.println(table_rotten_tomatoes_tomatometer_reviewscounted[i]);
+            rzapis4.println(table_rotten_tomatoes_tomatometer_fresh[i]);
+            rzapis5.println(table_rotten_tomatoes_tomatometer_rotten[i]);
+            rzapis6.println(table_rotten_tomatoes_audience_score_proc[i]);
+            rzapis7.println(table_rotten_tomatoes_audience_score_average_rating[i]);
+            rzapis8.println(table_rotten_tomatoes_audience_score_users_rating[i]);
+            rzapis9.println(table_rotten_tomatoes_rtitle[i]);
+
+        }
+
+
+        rzapis.close();
+        rzapis2.close();
+        rzapis3.close();
+        rzapis4.close();
+        rzapis5.close();
+        rzapis6.close();
+        rzapis7.close();
+        rzapis8.close();
+        rzapis9.close();
+
+
+////////////////////////////////rotten tomatoes/////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////myanimelist/////////////////////////////////////////////////////////////////
+
+
+        PrintWriter mzapis =  new PrintWriter("myanimelist_score.txt");
+        PrintWriter mzapis2 =  new PrintWriter("myanimelist_ranked.txt");
+        PrintWriter mzapis3 =  new PrintWriter("myanimelist_popularity.txt");
+        PrintWriter mzapis4 =  new PrintWriter("myanimelist_members.txt");
+        PrintWriter mzapis5 =  new PrintWriter("myanimelist_title.txt");
+
+
+        File mplik = new File("D:\\Prg\\IdeaProjects\\scraper\\src\\main\\resources\\baza_myanimelist.txt");
+        Scanner modczyt = new Scanner(mplik);
+        int mlicz=0;
+        int mmlicz=0;
+        while(modczyt.hasNextLine()){
+            String rtekst=modczyt.nextLine();
+            mmlicz++;
+        }
+        String[] baza_myanimelist = new String[mmlicz];
+        Scanner mmodczyt = new Scanner(mplik);
+        while(mmodczyt.hasNextLine()){
+            String rtekst=mmodczyt.nextLine();
+            baza_myanimelist[mlicz]=rtekst;
+            //System.out.println(odczyt.nextLine());
+            System.out.println(baza_myanimelist[mlicz]);
+            mlicz++;
+        }
+
+
+        String[] table_myanimelist_score = new String[251];
+        String[] table_myanimelist_ranked = new String[251];
+        String[] table_myanimelist_popularity = new String[251];
+        String[] table_myanimelist_members = new String[251];
+        String[] table_myanimelist_title = new String[251];
+
+        for(int i=0;i<baza_myanimelist.length;i++) {
+            Document document5 = Jsoup.connect(baza_myanimelist[i]).userAgent("Mozilla/17.0").get();
+            Elements element10 = document5.select(".stats-block.po-r.clearfix");
+            String myanimelist = element10.text();
+            System.out.println(myanimelist);
+
+            String delimiter = "Ranked|Popularity|Members|#|\\s+";
+            String[] rate_info = myanimelist.split(delimiter);
+
+            String mscore = rate_info[0];
+            System.out.println(mscore);
+            table_myanimelist_score[i]=mscore;
+
+            String mranked = rate_info[4];
+            System.out.println(mranked);
+            table_myanimelist_ranked[i]=mranked;
+
+            String mpopularity = rate_info[7];
+            System.out.println(mpopularity);
+            table_myanimelist_popularity[i]=mpopularity;
+
+            String mmembers = rate_info[9];
+            System.out.println(mmembers);
+            table_myanimelist_members[i]=mmembers;
+
+            Elements element11 = document5.select("#contentWrapper h1");
+            String atitle = element11.text();
+            System.out.println(atitle);
+            table_myanimelist_title[i]=atitle;
+
+            mzapis.println(table_myanimelist_score[i]);
+            mzapis2.println(table_myanimelist_ranked[i]);
+            mzapis3.println(table_myanimelist_popularity[i]);
+            mzapis4.println(table_myanimelist_members[i]);
+            mzapis5.println(table_myanimelist_title[i]);
+
+        }
+        mzapis.close();
+        mzapis2.close();
+        mzapis3.close();
+        mzapis4.close();
+        mzapis5.close();
+
+////////////////////////////////myanimelist/////////////////////////////////////////////////////////////////
+    }
+}
+
